@@ -202,7 +202,7 @@ class Sms implements SmsInterface
      */
     public function setSchedule($schedule)
     {
-        if (!$schedule instanceof \DateTime) {
+        if ($schedule !== null && !$schedule instanceof \DateTime) {
             $schedule = \DateTime::createFromFormat('Y-m-d\TH:i:s', $schedule);
         }
         $this->schedule = $schedule;
@@ -225,7 +225,7 @@ class Sms implements SmsInterface
      */
     public function setTimeToLive($timeToLive)
     {
-        if (!$timeToLive instanceof \DateTime) {
+        if ($timeToLive !== null && !$timeToLive instanceof \DateTime) {
             $timeToLive = \DateTime::createFromFormat('Y-m-d\TH:i:s', $timeToLive);
         }
         $this->timeToLive = $timeToLive;
@@ -248,7 +248,7 @@ class Sms implements SmsInterface
      */
     public function setExpiryDate($expiryDate)
     {
-        if (!$expiryDate instanceof \DateTime) {
+        if ($expiryDate !== null && !$expiryDate instanceof \DateTime) {
             $expiryDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $expiryDate);
         }
         $this->expiryDate = $expiryDate;
@@ -300,7 +300,11 @@ class Sms implements SmsInterface
             $array['to'] = $this->to;
         }
         if ($this->schedule !== null) {
-            $array['schedule'] = $this->schedule->format('Y-m-d\TH:i:s');
+            if ($this->schedule instanceof \DateTime) {
+                $array['schedule'] = $this->schedule->format('Y-m-d\TH:i:s');
+            } else {
+                $array['schedule'] = $this->schedule;
+            }
         }
         if ($this->msg !== null) {
             $array['msg'] = $this->msg;
@@ -312,10 +316,18 @@ class Sms implements SmsInterface
             $array['id'] = $this->id;
         }
         if ($this->expiryDate !== null) {
-            $array['expiryDate'] = $this->expiryDate->format('Y-m-d\TH:i:s');
+            if ($this->expiryDate instanceof \DateTime) {
+                $array['expiryDate'] = $this->expiryDate->format('Y-m-d\TH:i:s');
+            } else {
+                $array['expiryDate'] = $this->expiryDate;
+            }
         }
         if ($this->timeToLive !== null) {
-            $array['timetoLive'] = $this->timeToLive->format('Y-m-d\TH:i:s');
+            if ($this->timeToLive instanceof \DateTime) {
+                $array['timetoLive'] = $this->timeToLive->format('Y-m-d\TH:i:s');
+            } else {
+                $array['timetoLive'] = $this->timeToLive;
+            }
         }
 
         return $array;

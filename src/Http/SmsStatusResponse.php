@@ -96,7 +96,7 @@ class SmsStatusResponse extends SmsResponse implements SmsStatusResponseInterfac
      */
     public function setReceived($received)
     {
-        if (!$received instanceof \DateTime) {
+        if ($received !== null && !$received instanceof \DateTime) {
             $received = \DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
         }
         $this->received = $received;

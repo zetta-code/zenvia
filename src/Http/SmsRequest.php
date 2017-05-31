@@ -240,7 +240,7 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
      */
     public function setReceived($received)
     {
-        if (!$received instanceof \DateTime) {
+        if ($received !== null && !$received instanceof \DateTime) {
             $received = \DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
         }
         $this->received = $received;
@@ -367,6 +367,11 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
         }
         if ($this->received !== null) {
             $array['received'] = $this->received->format('Y-m-d\TH:i:s');
+            if ($this->received instanceof \DateTime) {
+                $array['received'] = $this->received->format('Y-m-d\TH:i:s');
+            } else {
+                $array['received'] = $this->received;
+            }
         }
         if ($this->shortCode !== null) {
             $array['shortCode'] = $this->shortCode;

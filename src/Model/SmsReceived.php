@@ -100,7 +100,7 @@ class SmsReceived implements SmsReceivedInterface
      */
     public function setReceived($received)
     {
-        if (!$received instanceof \DateTime) {
+        if ($received !== null && !$received instanceof \DateTime) {
             $received = \DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
         }
         $this->received = $received;
@@ -287,6 +287,11 @@ class SmsReceived implements SmsReceivedInterface
         }
         if ($this->received !== null) {
             $array['received'] = $this->received->format('Y-m-d\TH:i:s');
+            if ($this->received instanceof \DateTime) {
+                $array['received'] = $this->received->format('Y-m-d\TH:i:s');
+            } else {
+                $array['received'] = $this->received;
+            }
         }
         if ($this->correlatedMessageSmsId !== null) {
             $array['correlatedMessageSmsId'] = $this->correlatedMessageSmsId;
