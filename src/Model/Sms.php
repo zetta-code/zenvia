@@ -310,7 +310,7 @@ class Sms implements SmsInterface
             $array['msg'] = $this->msg;
         }
         if ($this->callbackOption !== null) {
-            $array['callbackOption'] = $this->callbackOption;
+            $array['callbackOption'] = (string) $this->callbackOption;
         }
         if ($this->id !== null) {
             $array['id'] = $this->id;
