@@ -1,13 +1,19 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
+
+declare(strict_types=1);
 
 namespace Zetta\Zenvia\Http;
 
-use Zetta\Zenvia\Constant\DetailCode;
-use Zetta\Zenvia\Constant\StatusCode;
+use DateTime;
+use Zetta\Zenvia\Contract\SmsStatusResponseInterface;
+use Zetta\Zenvia\Enum\DetailCodeEnum;
+use Zetta\Zenvia\Enum\StatusCodeEnum;
 
 class SmsStatusResponse extends SmsResponse implements SmsStatusResponseInterface
 {
@@ -21,7 +27,7 @@ class SmsStatusResponse extends SmsResponse implements SmsStatusResponseInterfac
     /**
      * Received
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $received;
 
@@ -37,21 +43,29 @@ class SmsStatusResponse extends SmsResponse implements SmsStatusResponseInterfac
      *
      * @var string
      */
-    protected $mobileOperatorName;
+    protected $mobileOperatorName = '';
 
     /**
      * StatusResponse constructor.
-     * @param StatusCode|string $statusCode
+     * @param StatusCodeEnum|string $statusCode
      * @param string $statusDescription
-     * @param DetailCode|string $detailCode
+     * @param DetailCodeEnum|string $detailCode
      * @param string $detailDescription
      * @param string $id
-     * @param \DateTime|string $received
+     * @param DateTime|string|null $received
      * @param string $shortCode
      * @param string $mobileOperatorName
      */
-    public function __construct($statusCode, $statusDescription, $detailCode, $detailDescription, $id = null, $received  = null, $shortCode  = null, $mobileOperatorName = null)
-    {
+    public function __construct(
+        $statusCode,
+        string $statusDescription,
+        $detailCode,
+        string $detailDescription,
+        string $id = '',
+        $received = null,
+        string $shortCode = '',
+        string $mobileOperatorName = ''
+    ) {
         parent::__construct($statusCode, $statusDescription, $detailCode, $detailDescription);
 
         $this->id = $id;
@@ -60,84 +74,48 @@ class SmsStatusResponse extends SmsResponse implements SmsStatusResponseInterfac
         $this->mobileOperatorName = $mobileOperatorName;
     }
 
-    /**
-     * Get the StatusResponse id
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * Set the StatusResponse id
-     * @param string $id
-     * @return SmsStatusResponse
-     */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Get the StatusResponse received
-     * @return \DateTime
-     */
     public function getReceived()
     {
         return $this->received;
     }
 
-    /**
-     * Set the StatusResponse received
-     * @param \DateTime|string $received
-     * @return SmsStatusResponse
-     */
-    public function setReceived($received)
+    public function setReceived($received): self
     {
-        if ($received !== null && !$received instanceof \DateTime) {
-            $received = \DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
+        if ($received !== null && ! $received instanceof DateTime) {
+            $received = DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
         }
         $this->received = $received;
         return $this;
     }
 
-    /**
-     * Get the StatusResponse shortCode
-     * @return string
-     */
-    public function getShortCode()
+    public function getShortCode(): string
     {
         return $this->shortCode;
     }
 
-    /**
-     * Set the StatusResponse shortCode
-     * @param string $shortCode
-     * @return SmsStatusResponse
-     */
-    public function setShortCode($shortCode)
+    public function setShortCode($shortCode): self
     {
         $this->shortCode = $shortCode;
         return $this;
     }
 
-    /**
-     * Get the StatusResponse mobileOperatorName
-     * @return string
-     */
-    public function getMobileOperatorName()
+    public function getMobileOperatorName(): string
     {
         return $this->mobileOperatorName;
     }
 
-    /**
-     * Set the StatusResponse mobileOperatorName
-     * @param string $mobileOperatorName
-     * @return SmsStatusResponse
-     */
-    public function setMobileOperatorName($mobileOperatorName)
+    public function setMobileOperatorName(string $mobileOperatorName): self
     {
         $this->mobileOperatorName = $mobileOperatorName;
         return $this;

@@ -1,12 +1,17 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
+
+declare(strict_types=1);
 
 namespace Zetta\Zenvia\Http;
 
-use Zetta\Zenvia\Model\SmsReceivedInterface;
+use Zetta\Zenvia\Contract\SmsReceivedInterface;
+use Zetta\Zenvia\Contract\SmsReceivedResponseInterface;
 
 class SmsReceivedResponse extends SmsResponse implements SmsReceivedResponseInterface
 {
@@ -17,41 +22,25 @@ class SmsReceivedResponse extends SmsResponse implements SmsReceivedResponseInte
      */
     protected $receiveds = [];
 
-    /**
-     * Get the ReceivedResponse receiveds
-     * @return array Lista com as mensagens recebidas.
-     */
-    public function getReceiveds()
+    public function getReceiveds(): array
     {
         return $this->receiveds;
     }
 
-    /**
-     * Set the ReceivedResponse receiveds
-     * @param array $receiveds
-     * @return SmsReceivedResponseInterface
-     */
-    public function setReceiveds($receiveds)
+    public function setReceiveds(array $receiveds = []): self
     {
         $this->receiveds = $receiveds;
         return $this;
     }
 
-    /**
-     * Has the ReceivedResponse receiveds
-     * @return bool
-     */
-    public function hasReceiveds()
+    public function hasReceiveds(): bool
     {
         return count($this->receiveds) > 0;
     }
 
-    /**
-     * Add received to the ReceivedResponse receiveds
-     * @param SmsReceivedInterface $received
-     */
-    public function addReceived($received)
+    public function addReceived(SmsReceivedInterface $received): self
     {
         $this->receiveds[] = $received;
+        return $this;
     }
 }

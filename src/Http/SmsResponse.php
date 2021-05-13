@@ -1,28 +1,33 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
+
+declare(strict_types=1);
 
 namespace Zetta\Zenvia\Http;
 
-use Zetta\Zenvia\Constant\DetailCode;
-use Zetta\Zenvia\Constant\ResponseParam;
-use Zetta\Zenvia\Constant\StatusCode;
+use Zetta\Zenvia\Contract\SmsResponseInterface;
+use Zetta\Zenvia\Enum\DetailCodeEnum;
+use Zetta\Zenvia\Enum\ResponseParamEnum;
+use Zetta\Zenvia\Enum\StatusCodeEnum;
 
 class SmsResponse implements SmsResponseInterface
 {
     /**
      * Name
      *
-     * @var ResponseParam
+     * @var ResponseParamEnum
      */
     protected $name;
 
     /**
      * Status code
      *
-     * @var StatusCode
+     * @var StatusCodeEnum
      */
     protected $statusCode;
 
@@ -36,7 +41,7 @@ class SmsResponse implements SmsResponseInterface
     /**
      * Detail code
      *
-     * @var DetailCode
+     * @var DetailCodeEnum
      */
     protected $detailCode;
 
@@ -49,12 +54,12 @@ class SmsResponse implements SmsResponseInterface
 
     /**
      * SmsResponse constructor.
-     * @param StatusCode|string $statusCode
+     * @param StatusCodeEnum|string $statusCode
      * @param string $statusDescription
-     * @param DetailCode|string $detailCode
+     * @param DetailCodeEnum|string $detailCode
      * @param string $detailDescription
      */
-    public function __construct($statusCode, $statusDescription, $detailCode, $detailDescription)
+    public function __construct($statusCode, string $statusDescription, $detailCode, string $detailDescription)
     {
         $this->setStatusCode($statusCode);
         $this->statusDescription = $statusDescription;
@@ -62,111 +67,62 @@ class SmsResponse implements SmsResponseInterface
         $this->detailDescription = $detailDescription;
     }
 
-    /**
-     * Get the SmsResponse name
-     * @return ResponseParam
-     */
-    public function getName()
+    public function getName(): ResponseParamEnum
     {
         return $this->name;
     }
 
-    /**
-     * Set the SmsResponse name
-     * @param ResponseParam|string $name
-     * @return SmsResponse
-     */
-    public function setName($name)
+    public function setName($name): self
     {
-        if (!$name instanceof ResponseParam) {
-            $name = new ResponseParam($name);
-        }
-        $this->name = $name;
+        $this->name = ! $name instanceof ResponseParamEnum && $name !== null
+            ? ResponseParamEnum::from($name)
+            : $name;
         return $this;
     }
 
-    /**
-     * Get the SmsResponse statusCode
-     * @return StatusCode
-     */
-    public function getStatusCode()
+    public function getStatusCode(): StatusCodeEnum
     {
         return $this->statusCode;
     }
 
-    /**
-     * Set the SmsResponse statusCode
-     * @param StatusCode|string $statusCode
-     * @return SmsResponse
-     */
-    public function setStatusCode($statusCode)
+    public function setStatusCode($statusCode): self
     {
-        if (!$statusCode instanceof StatusCode) {
-            $statusCode = new StatusCode($statusCode);
-        }
-        $this->statusCode = $statusCode;
+        $this->statusCode = ! $statusCode instanceof StatusCodeEnum && $statusCode !== null
+            ? StatusCodeEnum::from($statusCode)
+            : $statusCode;
         return $this;
     }
 
-    /**
-     * Get the SmsResponse statusDescription
-     * @return string
-     */
-    public function getStatusDescription()
+    public function getStatusDescription(): string
     {
         return $this->statusDescription;
     }
 
-    /**
-     * Set the SmsResponse statusDescription
-     * @param string $statusDescription
-     * @return SmsResponse
-     */
-    public function setStatusDescription($statusDescription)
+    public function setStatusDescription(string $statusDescription): self
     {
         $this->statusDescription = $statusDescription;
         return $this;
     }
 
-    /**
-     * Get the SmsResponse detailCode
-     * @return DetailCode
-     */
-    public function getDetailCode()
+    public function getDetailCode(): DetailCodeEnum
     {
         return $this->detailCode;
     }
 
-    /**
-     * Set the SmsResponse detailCode
-     * @param DetailCode|string $detailCode
-     * @return SmsResponse
-     */
-    public function setDetailCode($detailCode)
+    public function setDetailCode($detailCode): self
     {
-        if (!$detailCode instanceof DetailCode) {
-            $detailCode = new DetailCode($detailCode);
-        }
-
-        $this->detailCode = $detailCode;
+        $this->detailCode = ! $detailCode instanceof DetailCodeEnum && $detailCode !== null
+            ? DetailCodeEnum::from($detailCode)
+            : $detailCode;
         return $this;
     }
 
-    /**
-     * Get the SmsResponse detailDescription
-     * @return string
-     */
-    public function getDetailDescription()
+    public function getDetailDescription(): string
     {
         return $this->detailDescription;
     }
 
-    /**
-     * Set the SmsResponse detailDescription
-     * @param string $detailDescription
-     * @return SmsResponse
-     */
-    public function setDetailDescription($detailDescription)
+    public function setDetailDescription(string $detailDescription): self
     {
         $this->detailDescription = $detailDescription;
         return $this;

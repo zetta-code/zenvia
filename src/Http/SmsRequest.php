@@ -1,29 +1,36 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
+
+declare(strict_types=1);
 
 namespace Zetta\Zenvia\Http;
 
-use Zend\Stdlib\ArraySerializableInterface;
-use Zetta\Zenvia\Constant\DetailCode;
-use Zetta\Zenvia\Constant\RequestParam;
-use Zetta\Zenvia\Constant\StatusCode;
+use DateTime;
+use Zetta\Zenvia\Contract\SmsReceivedInterface;
+use Zetta\Zenvia\Contract\SmsRequestInterface;
+use Zetta\Zenvia\Enum\DetailCodeEnum;
+use Zetta\Zenvia\Enum\RequestParamEnum;
+use Zetta\Zenvia\Enum\StatusCodeEnum;
+use Laminas\Stdlib\ArraySerializableInterface;
 
 class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
 {
     /**
      * Name
      *
-     * @var RequestParam
+     * @var RequestParamEnum
      */
     protected $name;
 
     /**
      * Status code
      *
-     * @var StatusCode
+     * @var StatusCodeEnum
      */
     protected $statusCode;
 
@@ -37,7 +44,7 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
     /**
      * Detail code
      *
-     * @var DetailCode
+     * @var DetailCodeEnum
      */
     protected $detailCode;
 
@@ -58,7 +65,7 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
     /**
      * Received
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $received;
 
@@ -79,13 +86,13 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
     /**
      * Sms Received
      *
-     * @var string
+     * @var SmsReceivedInterface
      */
     protected $smsReceived;
 
     /**
      * SmsRequest constructor.
-     * @param RequestParam|string $name
+     * @param RequestParamEnum|string $name
      */
     public function __construct($name = null)
     {
@@ -94,214 +101,125 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
         }
     }
 
-    /**
-     * Get the SmsRequest name
-     * @return RequestParam
-     */
-    public function getName()
+    public function getName(): RequestParamEnum
     {
         return $this->name;
     }
 
     /**
      * Set the SmsRequest name
-     * @param RequestParam|string $name
+     * @param RequestParamEnum|string $name
      * @return SmsRequest
      */
     public function setName($name)
     {
-        if (!$name instanceof RequestParam) {
-            $name = new RequestParam($name);
-        }
-        $this->name = $name;
+        $this->name = ! $name instanceof RequestParamEnum && $name !== null
+            ? RequestParamEnum::from($name)
+            : $name;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest statusCode
-     * @return StatusCode
-     */
-    public function getStatusCode()
+    public function getStatusCode(): StatusCodeEnum
     {
         return $this->statusCode;
     }
 
-    /**
-     * Set the SmsRequest statusCode
-     * @param StatusCode|string $statusCode
-     * @return SmsRequest
-     */
     public function setStatusCode($statusCode)
     {
-        if (!$statusCode instanceof StatusCode) {
-            $statusCode = new StatusCode($statusCode);
-        }
-        $this->statusCode = $statusCode;
+        $this->statusCode = ! $statusCode instanceof StatusCodeEnum && $statusCode !== null
+            ? StatusCodeEnum::from($statusCode)
+            : $statusCode;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest statusDescription
-     * @return string
-     */
-    public function getStatusDescription()
+    public function getStatusDescription(): string
     {
         return $this->statusDescription;
     }
 
-    /**
-     * Set the SmsRequest statusDescription
-     * @param string $statusDescription
-     * @return SmsRequest
-     */
-    public function setStatusDescription($statusDescription)
+    public function setStatusDescription($statusDescription): self
     {
         $this->statusDescription = $statusDescription;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest detailCode
-     * @return DetailCode
-     */
-    public function getDetailCode()
+    public function getDetailCode(): DetailCodeEnum
     {
         return $this->detailCode;
     }
 
-    /**
-     * Set the SmsRequest detailCode
-     * @param DetailCode|string $detailCode
-     * @return SmsRequest
-     */
-    public function setDetailCode($detailCode)
+    public function setDetailCode($detailCode): self
     {
-        if (!$detailCode instanceof DetailCode) {
-            $detailCode = new DetailCode($detailCode);
-        }
-
-        $this->detailCode = $detailCode;
+        $this->detailCode = ! $detailCode instanceof DetailCodeEnum && $detailCode !== null
+            ? DetailCodeEnum::from($detailCode)
+            : $detailCode;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest detailDescription
-     * @return string
-     */
-    public function getDetailDescription()
+    public function getDetailDescription(): string
     {
         return $this->detailDescription;
     }
 
-    /**
-     * Set the SmsRequest detailDescription
-     * @param string $detailDescription
-     * @return SmsRequest
-     */
-    public function setDetailDescription($detailDescription)
+    public function setDetailDescription(string $detailDescription): self
     {
         $this->detailDescription = $detailDescription;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest id
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * Set the SmsRequest id
-     * @param string $id
-     * @return SmsRequest
-     */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest received
-     * @return \DateTime
-     */
     public function getReceived()
     {
         return $this->received;
     }
 
-    /**
-     * Set the SmsRequest received
-     * @param \DateTime|string $received
-     * @return SmsRequest
-     */
-    public function setReceived($received)
+    public function setReceived($received): self
     {
-        if ($received !== null && !$received instanceof \DateTime) {
-            $received = \DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
+        if ($received !== null && ! $received instanceof DateTime) {
+            $received = DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
         }
         $this->received = $received;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest shortCode
-     * @return string
-     */
-    public function getShortCode()
+    public function getShortCode(): string
     {
         return $this->shortCode;
     }
 
-    /**
-     * Set the SmsRequest shortCode
-     * @param string $shortCode
-     * @return SmsRequest
-     */
-    public function setShortCode($shortCode)
+    public function setShortCode(string $shortCode): self
     {
         $this->shortCode = $shortCode;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest mobileOperatorName
-     * @return string
-     */
-    public function getMobileOperatorName()
+    public function getMobileOperatorName(): string
     {
         return $this->mobileOperatorName;
     }
 
-    /**
-     * Set the SmsRequest mobileOperatorName
-     * @param string $mobileOperatorName
-     * @return SmsRequest
-     */
-    public function setMobileOperatorName($mobileOperatorName)
+    public function setMobileOperatorName(string $mobileOperatorName): self
     {
         $this->mobileOperatorName = $mobileOperatorName;
         return $this;
     }
 
-    /**
-     * Get the SmsRequest smsReceived
-     * @return string
-     */
-    public function getSmsReceived()
+    public function getSmsReceived(): ?SmsReceivedInterface
     {
         return $this->smsReceived;
     }
 
-    /**
-     * Set the SmsRequest smsReceived
-     * @param string $smsReceived
-     * @return SmsRequest
-     */
-    public function setSmsReceived($smsReceived)
+    public function setSmsReceived(?SmsReceivedInterface $smsReceived): self
     {
         $this->smsReceived = $smsReceived;
         return $this;
@@ -310,7 +228,7 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
     /**
      * Exchange internal values from provided array
      *
-     * @param  array $array
+     * @param array $array
      * @return void
      */
     public function exchangeArray(array $array)
@@ -367,7 +285,7 @@ class SmsRequest implements SmsRequestInterface, ArraySerializableInterface
         }
         if ($this->received !== null) {
             $array['received'] = $this->received->format('Y-m-d\TH:i:s');
-            if ($this->received instanceof \DateTime) {
+            if ($this->received instanceof DateTime) {
                 $array['received'] = $this->received->format('Y-m-d\TH:i:s');
             } else {
                 $array['received'] = $this->received;
