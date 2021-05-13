@@ -1,12 +1,18 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
+
+declare(strict_types=1);
 
 namespace Zetta\Zenvia\Model;
 
-use Zetta\Zenvia\Constant\Callback;
+use DateTime;
+use Zetta\Zenvia\Contract\SmsInterface;
+use Zetta\Zenvia\Enum\CallbackEnum;
 
 class Sms implements SmsInterface
 {
@@ -39,28 +45,28 @@ class Sms implements SmsInterface
     protected $from;
 
     /**
-     * @var Callback
+     * @var CallbackEnum
      */
     protected $callbackOption;
 
     /**
      * Schedule
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $schedule;
 
     /**
      * Time to live
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $timeToLive = null;
 
     /**
      * Expiry date
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $expiryDate = null;
 
@@ -71,190 +77,126 @@ class Sms implements SmsInterface
      * @param string $id
      * @param string $from
      * @param Callback|string $callbackOption
-     * @param \DateTime|string $schedule
+     * @param DateTime|string $schedule
      */
-    public function __construct($to, $msg, $id = null, $from = null, $schedule = null, $callbackOption = Callback::CALLBACK_NONE)
-    {
+    public function __construct(
+        $to,
+        $msg,
+        $id = null,
+        $from = null,
+        $schedule = null,
+        $callbackOption = null
+    ) {
         $this->to = $to;
         $this->msg = $msg;
         $this->id = $id;
         $this->from = $from;
+        if ($callbackOption === null) {
+            $callbackOption = CallbackEnum::none();
+        }
         $this->setCallbackOption($callbackOption);
         $this->setSchedule($schedule);
     }
 
-    /**
-     * Get the Sms id
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * Set the Sms id
-     * @param string $id
-     * @return Sms
-     */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
     }
 
-    /**
-     * Get the Sms to
-     * @return string
-     */
-    public function getTo()
+    public function getTo(): string
     {
         return $this->to;
     }
 
-    /**
-     * Set the Sms to
-     * @param string $to
-     * @return Sms
-     */
-    public function setTo($to)
+    public function setTo(string $to): self
     {
         $this->to = $to;
         return $this;
     }
 
-    /**
-     * Get the Sms msg
-     * @return string
-     */
-    public function getMsg()
+    public function getMsg(): string
     {
         return $this->msg;
     }
 
-    /**
-     * Set the Sms msg
-     * @param string $msg
-     * @return Sms
-     */
-    public function setMsg($msg)
+    public function setMsg(string $msg): self
     {
         $this->msg = $msg;
         return $this;
     }
 
-    /**
-     * Get the Sms from
-     * @return string
-     */
-    public function getFrom()
+    public function getFrom(): string
     {
         return $this->from;
     }
 
-    /**
-     * Set the Sms from
-     * @param string $from
-     * @return Sms
-     */
-    public function setFrom($from)
+    public function setFrom(string $from): self
     {
         $this->from = $from;
         return $this;
     }
 
-    /**
-     * Get the Sms callbackOption
-     * @return Callback
-     */
-    public function getCallbackOption()
+    public function getCallbackOption(): CallbackEnum
     {
         return $this->callbackOption;
     }
 
-    /**
-     * Set the Sms callbackOption
-     * @param Callback|string $callbackOption
-     * @return Sms
-     */
-    public function setCallbackOption($callbackOption)
+    public function setCallbackOption($callbackOption): self
     {
-        if (!$callbackOption instanceof Callback) {
-            $callbackOption = new Callback($callbackOption);
-        }
-        $this->callbackOption = $callbackOption;
+        $this->callbackOption = ! $callbackOption instanceof CallbackEnum && $callbackOption !== null
+            ? CallbackEnum::from($callbackOption)
+            : $callbackOption;
         return $this;
     }
 
-    /**
-     * Get the Sms schedule
-     * @return \DateTime
-     */
     public function getSchedule()
     {
         return $this->schedule;
     }
 
-    /**
-     * Set the Sms schedule
-     * @param \DateTime|string $schedule
-     * @return Sms
-     */
-    public function setSchedule($schedule)
+    public function setSchedule($schedule): self
     {
-        if ($schedule !== null && !$schedule instanceof \DateTime) {
-            $schedule = \DateTime::createFromFormat('Y-m-d\TH:i:s', $schedule);
+        if ($schedule !== null && ! $schedule instanceof DateTime) {
+            $schedule = DateTime::createFromFormat('Y-m-d\TH:i:s', $schedule);
         }
         $this->schedule = $schedule;
         return $this;
     }
 
-    /**
-     * Get the Sms timeToLive
-     * @return \DateTime
-     */
     public function getTimeToLive()
     {
         return $this->timeToLive;
     }
 
-    /**
-     * Set the Sms timeToLive
-     * @param \DateTime|string $timeToLive
-     * @return Sms
-     */
-    public function setTimeToLive($timeToLive)
+    public function setTimeToLive($timeToLive): self
     {
-        if ($timeToLive !== null && !$timeToLive instanceof \DateTime) {
-            $timeToLive = \DateTime::createFromFormat('Y-m-d\TH:i:s', $timeToLive);
+        if ($timeToLive !== null && ! $timeToLive instanceof DateTime) {
+            $timeToLive = DateTime::createFromFormat('Y-m-d\TH:i:s', $timeToLive);
         }
         $this->timeToLive = $timeToLive;
         return $this;
     }
 
-    /**
-     * Get the Sms expiryDate
-     * @return \DateTime
-     */
     public function getExpiryDate()
     {
         return $this->expiryDate;
     }
 
-    /**
-     * Set the Sms expiryDate
-     * @param \DateTime|string $expiryDate
-     * @return Sms
-     */
-    public function setExpiryDate($expiryDate)
+    public function setExpiryDate($expiryDate): self
     {
-        if ($expiryDate !== null && !$expiryDate instanceof \DateTime) {
-            $expiryDate = \DateTime::createFromFormat('Y-m-d\TH:i:s', $expiryDate);
+        if ($expiryDate !== null && ! $expiryDate instanceof DateTime) {
+            $expiryDate = DateTime::createFromFormat('Y-m-d\TH:i:s', $expiryDate);
         }
         $this->expiryDate = $expiryDate;
         return $this;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -300,7 +242,7 @@ class Sms implements SmsInterface
             $array['to'] = $this->to;
         }
         if ($this->schedule !== null) {
-            if ($this->schedule instanceof \DateTime) {
+            if ($this->schedule instanceof DateTime) {
                 $array['schedule'] = $this->schedule->format('Y-m-d\TH:i:s');
             } else {
                 $array['schedule'] = $this->schedule;
@@ -310,20 +252,20 @@ class Sms implements SmsInterface
             $array['msg'] = $this->msg;
         }
         if ($this->callbackOption !== null) {
-            $array['callbackOption'] = (string) $this->callbackOption;
+            $array['callbackOption'] = (string)$this->callbackOption;
         }
         if ($this->id !== null) {
             $array['id'] = $this->id;
         }
         if ($this->expiryDate !== null) {
-            if ($this->expiryDate instanceof \DateTime) {
+            if ($this->expiryDate instanceof DateTime) {
                 $array['expiryDate'] = $this->expiryDate->format('Y-m-d\TH:i:s');
             } else {
                 $array['expiryDate'] = $this->expiryDate;
             }
         }
         if ($this->timeToLive !== null) {
-            if ($this->timeToLive instanceof \DateTime) {
+            if ($this->timeToLive instanceof DateTime) {
                 $array['timetoLive'] = $this->timeToLive->format('Y-m-d\TH:i:s');
             } else {
                 $array['timetoLive'] = $this->timeToLive;

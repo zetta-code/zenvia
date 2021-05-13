@@ -1,10 +1,17 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
 
+declare(strict_types=1);
+
 namespace Zetta\Zenvia\Model;
+
+use DateTime;
+use Zetta\Zenvia\Contract\SmsReceivedInterface;
 
 class SmsReceived implements SmsReceivedInterface
 {
@@ -13,12 +20,12 @@ class SmsReceived implements SmsReceivedInterface
      *
      * @var string
      */
-    protected $id;
+    protected $id = '';
 
     /**
      * Received
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $received;
 
@@ -63,22 +70,13 @@ class SmsReceived implements SmsReceivedInterface
      * @var string
      */
     protected $correlatedMessageSmsId;
-    
-    /**
-     * Get the Received id
-     * @return string
-     */
-    public function getId()
+
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * Set the Received id
-     * @param string $id
-     * @return SmsReceived
-     */
-    public function setId($id)
+    public function setId(string $id): self
     {
         $this->id = $id;
         return $this;
@@ -86,150 +84,88 @@ class SmsReceived implements SmsReceivedInterface
 
     /**
      * Get the Received dateReceived
-     * @return \DateTime
+     * @return DateTime
      */
     public function getReceived()
     {
         return $this->received;
     }
 
-    /**
-     * Set the Received dateReceived
-     * @param \DateTime|string $received
-     * @return SmsReceived
-     */
-    public function setReceived($received)
+    public function setReceived($received): self
     {
-        if ($received !== null && !$received instanceof \DateTime) {
-            $received = \DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
+        if ($received !== null && ! $received instanceof DateTime) {
+            $received = DateTime::createFromFormat('Y-m-d\TH:i:s', $received);
         }
         $this->received = $received;
         return $this;
     }
 
-    /**
-     * Get the Received mobile
-     * @return string
-     */
-    public function getMobile()
+    public function getMobile(): string
     {
         return $this->mobile;
     }
 
-    /**
-     * Set the Received mobile
-     * @param string $mobile
-     * @return SmsReceived
-     */
-    public function setMobile($mobile)
+    public function setMobile(string $mobile): self
     {
         $this->mobile = $mobile;
         return $this;
     }
 
-    /**
-     * Get the Received body
-     * @return string
-     */
-    public function getBody()
+    public function getBody(): string
     {
         return $this->body;
     }
 
-    /**
-     * Set the Received body
-     * @param string $body
-     * @return SmsReceived
-     */
-    public function setBody($body)
+    public function setBody(string $body): self
     {
         $this->body = $body;
         return $this;
     }
 
-    /**
-     * Get the Received shortCode
-     * @return string
-     */
-    public function getShortCode()
+    public function getShortCode(): string
     {
         return $this->shortCode;
     }
 
-    /**
-     * Set the Received shortCode
-     * @param string $shortCode
-     * @return SmsReceived
-     */
-    public function setShortCode($shortCode)
+    public function setShortCode(string $shortCode): self
     {
         $this->shortCode = $shortCode;
         return $this;
     }
 
-    /**
-     * Get the SmsReceived account
-     * @return string
-     */
-    public function getAccount()
+    public function getAccount(): string
     {
         return $this->account;
     }
 
-    /**
-     * Set the SmsReceived account
-     * @param string $account
-     * @return SmsReceived
-     */
-    public function setAccount($account)
+    public function setAccount(string $account): self
     {
         $this->account = $account;
         return $this;
     }
 
-    /**
-     * Get the Received mobileOperatorName
-     * @return string
-     */
-    public function getMobileOperatorName()
+    public function getMobileOperatorName(): string
     {
         return $this->mobileOperatorName;
     }
 
-    /**
-     * Set the Received mobileOperatorName
-     * @param string $mobileOperatorName
-     * @return SmsReceived
-     */
-    public function setMobileOperatorName($mobileOperatorName)
+    public function setMobileOperatorName(string $mobileOperatorName): self
     {
         $this->mobileOperatorName = $mobileOperatorName;
         return $this;
     }
 
-    /**
-     * Get the Received correlatedMessageSmsId
-     * @return string
-     */
-    public function getCorrelatedMessageSmsId()
+    public function getCorrelatedMessageSmsId(): string
     {
         return $this->correlatedMessageSmsId;
     }
 
-    /**
-     * Set the Received correlatedMessageSmsId
-     * @param string $correlatedMessageSmsId
-     * @return SmsReceived
-     */
-    public function setCorrelatedMessageSmsId($correlatedMessageSmsId)
+    public function setCorrelatedMessageSmsId(string $correlatedMessageSmsId): self
     {
         $this->correlatedMessageSmsId = $correlatedMessageSmsId;
         return $this;
     }
-    
-    /**
-     * @inheritdoc
-     */
+
     public function exchangeArray(array $array)
     {
         if (isset($array['id'])) {
@@ -260,9 +196,6 @@ class SmsReceived implements SmsReceivedInterface
         }
     }
 
-    /**
-     * * @inheritdoc
-     */
     public function getArrayCopy()
     {
         $array = [];
@@ -287,7 +220,7 @@ class SmsReceived implements SmsReceivedInterface
         }
         if ($this->received !== null) {
             $array['received'] = $this->received->format('Y-m-d\TH:i:s');
-            if ($this->received instanceof \DateTime) {
+            if ($this->received instanceof DateTime) {
                 $array['received'] = $this->received->format('Y-m-d\TH:i:s');
             } else {
                 $array['received'] = $this->received;
