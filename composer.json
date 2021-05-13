@@ -19,7 +19,7 @@
   "require": {
     "php": "^7.4",
     "ext-json": "*",
-    "laminas/laminas-stdlib": "^2.7",
+    "laminas/laminas-stdlib": "^3.2",
     "spatie/enum": "^3.9",
     "guzzlehttp/guzzle": "^7.3"
   },

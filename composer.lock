@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5db3a398360c41d280d05e2295cd6004",
+    "content-hash": "8ab66af1cfa0bb3b38ff4df667792f16",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -240,114 +240,30 @@
             "time": "2021-04-26T09:17:50+00:00"
         },
         {
-            "name": "laminas/laminas-hydrator",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laminas/laminas-hydrator.git",
-                "reference": "1ae0a72885be9d74a6af5086c052191e7cbcae83"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-hydrator/zipball/1ae0a72885be9d74a6af5086c052191e7cbcae83",
-                "reference": "1ae0a72885be9d74a6af5086c052191e7cbcae83",
-                "shasum": ""
-            },
-            "require": {
-                "laminas/laminas-stdlib": "^2.7 || ^3.0",
-                "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^5.5 || ^7.0"
-            },
-            "replace": {
-                "zendframework/zend-hydrator": "self.version"
-            },
-            "require-dev": {
-                "laminas/laminas-eventmanager": "^2.6.2 || ^3.0",
-                "laminas/laminas-filter": "^2.6",
-                "laminas/laminas-inputfilter": "^2.6",
-                "laminas/laminas-serializer": "^2.6.1",
-                "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "^2.0@dev"
-            },
-            "suggest": {
-                "laminas/laminas-eventmanager": "^2.6.2 || ^3.0, to support aggregate hydrator usage",
-                "laminas/laminas-filter": "^2.6, to support naming strategy hydrator usage",
-                "laminas/laminas-serializer": "^2.6.1, to use the SerializableStrategy",
-                "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3, to support hydrator plugin manager usage"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-release-1.0": "1.0-dev",
-                    "dev-release-1.1": "1.1-dev",
-                    "dev-master": "2.0-dev",
-                    "dev-develop": "2.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Laminas\\Hydrator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "homepage": "https://laminas.dev",
-            "keywords": [
-                "hydrator",
-                "laminas"
-            ],
-            "support": {
-                "chat": "https://laminas.dev/chat",
-                "docs": "https://docs.laminas.dev/laminas-hydrator/",
-                "forum": "https://discourse.laminas.dev",
-                "issues": "https://github.com/laminas/laminas-hydrator/issues",
-                "rss": "https://github.com/laminas/laminas-hydrator/releases.atom",
-                "source": "https://github.com/laminas/laminas-hydrator"
-            },
-            "time": "2019-12-31T17:06:22+00:00"
-        },
-        {
             "name": "laminas/laminas-stdlib",
-            "version": "2.7.8",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-stdlib.git",
-                "reference": "da8ecaa0b35b92e0834d6c0c111bd5306b6dc471"
+                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/da8ecaa0b35b92e0834d6c0c111bd5306b6dc471",
-                "reference": "da8ecaa0b35b92e0834d6c0c111bd5306b6dc471",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
+                "reference": "d81c7ffe602ed0e6ecb18691019111c0f4bf1efe",
                 "shasum": ""
             },
             "require": {
-                "laminas/laminas-hydrator": "~1.1",
                 "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^5.6 || ^7.0",
-                "symfony/polyfill-php73": "^1.19"
+                "php": "^7.3 || ^8.0"
             },
             "replace": {
-                "zendframework/zend-stdlib": "self.version"
+                "zendframework/zend-stdlib": "^3.2.1"
             },
             "require-dev": {
-                "athletic/athletic": "~0.1",
-                "fabpot/php-cs-fixer": "1.7.*",
-                "laminas/laminas-config": "~2.5",
-                "laminas/laminas-eventmanager": "^2.6.1",
-                "laminas/laminas-filter": "~2.5",
-                "laminas/laminas-inputfilter": "~2.5",
-                "laminas/laminas-serializer": "~2.5",
-                "laminas/laminas-servicemanager": "^2.7.5 || ^3.0.3",
-                "phpunit/phpunit": "^5.7.27 || ^6.5.14 || ^7.5.20"
-            },
-            "suggest": {
-                "laminas/laminas-eventmanager": "To support aggregate hydrator usage",
-                "laminas/laminas-filter": "To support naming strategy hydrator usage",
-                "laminas/laminas-serializer": "Laminas\\Serializer component",
-                "laminas/laminas-servicemanager": "To support hydrator plugin manager usage"
+                "laminas/laminas-coding-standard": "~1.0.0",
+                "phpbench/phpbench": "^0.17.1",
+                "phpunit/phpunit": "~9.3.7"
             },
             "type": "library",
             "autoload": {
@@ -359,6 +275,7 @@
             "license": [
                 "BSD-3-Clause"
             ],
+            "description": "SPL extensions, array utilities, error handlers, and more",
             "homepage": "https://laminas.dev",
             "keywords": [
                 "laminas",
@@ -378,7 +295,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-02-16T20:21:34+00:00"
+            "time": "2020-11-19T20:18:59+00:00"
         },
         {
             "name": "laminas/laminas-zendframework-bridge",
@@ -666,85 +583,6 @@
                 }
             ],
             "time": "2021-05-10T09:27:50+00:00"
-        },
-        {
-            "name": "symfony/polyfill-php73",
-            "version": "v1.22.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php73.git",
-                "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php73/zipball/a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
-                "reference": "a678b42e92f86eca04b7fa4c0f6f19d097fb69e2",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.22-dev"
-                },
-                "thanks": {
-                    "name": "symfony/polyfill",
-                    "url": "https://github.com/symfony/polyfill"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php73\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ],
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 7.3+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "support": {
-                "source": "https://github.com/symfony/polyfill-php73/tree/v1.22.1"
-            },
-            "funding": [
-                {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2021-01-07T16:49:33+00:00"
         }
     ],
     "packages-dev": [
