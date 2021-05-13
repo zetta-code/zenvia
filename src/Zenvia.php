@@ -1,276 +1,162 @@
 <?php
+
 /**
- * @link      http://github.com/zetta-repo/zenvia for the canonical source repository
+ * @link      https://github.com/zetta-code/zenvia for the canonical source repository
  * @copyright Copyright (c) 2017 Zetta Code
+ * @license   https://github.com/zetta-code/zenvia/blob/master/LICENSE.d
  */
+
+declare(strict_types=1);
 
 namespace Zetta\Zenvia;
 
-use Zend\Http as ZendHttp;
-use Zetta\Zenvia\Exception\InvalidHttpClientException;
+use DateTime;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
+use Zetta\Zenvia\Contract\SmsInterface;
+use Zetta\Zenvia\Contract\SmsReceivedResponseInterface;
+use Zetta\Zenvia\Contract\SmsResponseInterface;
+use Zetta\Zenvia\Contract\SmsStatusResponseInterface;
+use Zetta\Zenvia\Contract\ZenviaInterface;
 use Zetta\Zenvia\Exception\RuntimeException;
-use Zetta\Zenvia\Http\ResponseInterface;
+use Zetta\Zenvia\Http\SmsReceivedResponse;
+use Zetta\Zenvia\Http\SmsResponse;
+use Zetta\Zenvia\Http\SmsStatusResponse;
 
 class Zenvia implements ZenviaInterface
 {
-    const DEFAULT_WEBSERVICE_URL = 'https://api-rest.zenvia360.com.br';
+    private const BASE_URI = 'https://api-rest.zenvia.com';
 
     /**
-     * Authenticator instance
-     *
-     * @var AuthenticatorInterface
+     * @var Client
      */
-    protected $authenticator;
+    protected $client;
+
+    protected string $account = '';
+
+    protected string $password = '';
 
     /**
-     * WebServiceUrl
+     * Web service URL
      *
      * @var string
      */
-    protected $webServiceUrl;
+    protected $baseUri;
 
     /**
-     * HTTP client object to use for retrieving feeds
+     * Zenvia constructor.
      *
-     * @var Http\ClientInterface
-     */
-    protected $httpClient = null;
-
-    /**
-     * Override HTTP PUT and DELETE request methods?
-     *
-     * @var bool
-     */
-    protected $httpMethodOverride = false;
-
-    /**
-     * HttpConditionalGet
-     *
-     * @var bool
-     */
-    protected $httpConditionalGet = false;
-
-    /**
      * @param string $account
      * @param string $password
-     * @param string $webServiceUrl
+     * @param string|null $baseUri
      */
-    public function __construct($account, $password, $webServiceUrl = null)
+    public function __construct(string $account, string $password, ?string $baseUri = null)
     {
-        $this->authenticator = new Authenticator($account, $password);
-        if($webServiceUrl === null){
-            $this->webServiceUrl = self::DEFAULT_WEBSERVICE_URL;
-        } else{
-            $this->webServiceUrl = $webServiceUrl;
+        $this->account = $account;
+        $this->password = $password;
+        $this->baseUri = $baseUri ?? self::BASE_URI;
+    }
+
+    /**
+     * Get the Zenvia client.
+     *
+     * @return Client
+     */
+    public function getClient(): Client
+    {
+        if ($this->client === null) {
+            $this->client = new Client([
+                'base_uri' => $this->baseUri,
+            ]);
         }
+        return $this->client;
     }
 
     /**
-     * @param AuthenticatorInterface $authenticator
-     * @return $this
+     * @param string $method
+     * @param string $uri
+     * @param SmsInterface|array|null $message
+     * @param string|null $aggregateId
+     *
+     * @return Contract\SmsReceivedResponseInterface|SmsResponseInterface|SmsResponseInterface[]|Contract\SmsStatusResponseInterface|SmsReceivedResponse|SmsResponse|SmsStatusResponse|mixed|null
+     * @throws GuzzleException
      */
-    public function setAuthenticator(AuthenticatorInterface $authenticator)
+    public function request(string $method, string $uri, $message = null, ?string $aggregateId = null)
     {
-        $this->authenticator = $authenticator;
-        return $this;
-    }
-
-    /**
-     * @return AuthenticatorInterface
-     */
-    public function getAuthenticator()
-    {
-        return $this->authenticator;
-    }
-
-    /**
-     * Get the Zenvia webServiceUrl
-     * @return string
-     */
-    public function getWebServiceUrl()
-    {
-        return $this->webServiceUrl;
-    }
-
-    /**
-     * Set the Zenvia webServiceUrl
-     * @param string $webServiceUrl
-     * @return Zenvia
-     */
-    public function setWebServiceUrl($webServiceUrl)
-    {
-        $this->webServiceUrl = $webServiceUrl;
-        return $this;
-    }
-
-    /**
-     * Get the Sms httpClient
-     * @return Http\ClientInterface
-     */
-    public function getHttpClient()
-    {
-        if (!$this->httpClient) {
-            $this->httpClient = new Http\ZendHttpClientDecorator(new ZendHttp\Client());
+        $options = [
+            'auth' => [$this->account, $this->password],
+            'headers' => $this->getBaseHeaders($method),
+        ];
+        if (in_array($method, ['POST', 'PUT']) && ! empty($message)) {
+            $options['body'] = Util::stringify($message, $aggregateId);
         }
 
-        return $this->httpClient;
-    }
-
-    /**
-     * Set the Sms httpClient
-     * @param Http\ClientInterface $httpClient
-     */
-    public function setHttpClient($httpClient)
-    {
-        if ($httpClient instanceof ZendHttp\Client) {
-            $httpClient = new Http\ZendHttpClientDecorator($httpClient);
-        }
-
-        if (!$httpClient instanceof Http\ClientInterface) {
-            throw new InvalidHttpClientException();
-        }
-        $this->httpClient = $httpClient;
-    }
-
-    /**
-     * Get the Sms httpMethodOverride
-     * @return bool
-     */
-    public function isHttpMethodOverride()
-    {
-        return $this->httpMethodOverride;
-    }
-
-    /**
-     * Set the Sms httpMethodOverride
-     * @param bool $httpMethodOverride
-     */
-    public function setHttpMethodOverride($httpMethodOverride)
-    {
-        $this->httpMethodOverride = $httpMethodOverride;
-    }
-
-    /**
-     * Get the Sms httpConditionalGet
-     * @return bool
-     */
-    public function isHttpConditionalGet()
-    {
-        return $this->httpConditionalGet;
-    }
-
-    /**
-     * Set the Sms httpConditionalGet
-     * @param bool $httpConditionalGet
-     */
-    public function setHttpConditionalGet($httpConditionalGet)
-    {
-        $this->httpConditionalGet = $httpConditionalGet;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function send($message, $aggregateId = null)
-    {
-        $client = $this->getHttpClient();
-        $url = $this->webServiceUrl . '/services/send-sms';
-
-        $json = Util::stringify($message, $aggregateId);
-        $response = $client->post($url, $json, $this->getBaseHeaders());
-        $this->checkResponse($response, $url);
+        $response = $this->getClient()->request($method, $uri, $options);
+        $this->checkResponse($response, $uri);
 
         return Util::toSmsResponse($response);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function sendMultiple($messages, $aggregateId = null)
+    public function send(SmsInterface $message, ?string $aggregateId = null): SmsResponseInterface
     {
-        $client = $this->getHttpClient();
-        $url = $this->webServiceUrl . '/services/send-sms-multiple';
-
-        $json = Util::stringify($messages, $aggregateId);
-        $response = $client->post($url, $json, $this->getBaseHeaders());
-        $this->checkResponse($response, $url);
-
-        return Util::toSmsResponse($response);
-
+        $uri = '/services/send-sms';
+        return $this->request('POST', $uri, $message, $aggregateId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function check($id)
+    public function sendMultiple(array $messages, ?string $aggregateId = null): array
     {
-        $client = $this->getHttpClient();
-        $url = $this->webServiceUrl . '/services/get-sms-status/' . $id;
-
-        $response = $client->get($url, $this->getBaseHeaders());
-        $this->checkResponse($response, $url);
-
-        return Util::toSmsResponse($response);
+        $uri = '/services/send-sms-multiple';
+        return $this->request('POST', $uri, $messages, $aggregateId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function cancel($id)
+    public function check(string $id): SmsStatusResponseInterface
     {
-        $client = $this->getHttpClient();
-        $url = $this->webServiceUrl . '/services/cancel-sms/' . $id;
-
-        $response = $client->post($url, null, $this->getBaseHeaders());
-        $this->checkResponse($response, $url);
-
-        return Util::toSmsResponse($response);
+        $uri = '/services/get-sms-status/' . $id;
+        return $this->request('GET', $uri);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function newSmsReceiveds(){
-        $client = $this->getHttpClient();
-        $url = $this->webServiceUrl . '/services/received/list';
-
-        $response = $client->post($url, null, $this->getBaseHeaders());
-        $this->checkResponse($response, $url);
-        return Util::toSmsResponse($response);
+    public function cancel(string $id): SmsResponseInterface
+    {
+        $uri = '/services/cancel-sms/' . $id;
+        return $this->request('POST', $uri);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function searchSmsReceiveds($start, $end, $mobile = null, $id = null){
-        $client = $this->getHttpClient();
+    public function newSmsReceiveds(): SmsReceivedResponseInterface
+    {
+        $uri = '/services/received/list';
+        return $this->request('POST', $uri);
+    }
 
-        if ($start instanceof \DateTime) {
+    public function searchSmsReceiveds(
+        $start,
+        $end,
+        ?string $mobile = null,
+        ?string $id = null
+    ): SmsReceivedResponseInterface {
+        if ($start instanceof DateTime) {
             $start = $start->format('Y-m-d\TH:i:s');
         }
         $start = rawurlencode($start);
-        if ($end instanceof \DateTime) {
+        if ($end instanceof DateTime) {
             $end = $end->format('Y-m-d\TH:i:s');
         }
         $end = rawurlencode($end);
 
-        $url = $this->webServiceUrl . '/services/received/search/' . $start . '/' . $end;
+        $uri = '/services/received/search/' . $start . '/' . $end;
         if ($mobile !== null) {
-            $url .= '?mobile=' . rawurlencode($mobile);
+            $uri .= '?mobile=' . rawurlencode($mobile);
         }
         if ($id !== null) {
             if ($mobile !== null) {
-                $url .= '&';
+                $uri .= '&';
             } else {
-                $url .= '?';
+                $uri .= '?';
             }
-            $url .= 'mtId=' . rawurlencode($id);
+            $uri .= 'mtId=' . rawurlencode($id);
         }
 
-        $response = $client->get($url, $this->getBaseHeaders());
-        $this->checkResponse($response, $url);
-
-        return Util::toSmsResponse($response);
+        return $this->request('GET', $uri);
     }
 
     /**
@@ -278,27 +164,31 @@ class Zenvia implements ZenviaInterface
      * @param string $url
      * @throws RuntimeException
      */
-    protected function checkResponse($response, $url = '')
+    protected function checkResponse(ResponseInterface $response, string $url = '')
     {
         if ($response->getStatusCode() >= 400) {
-            $exceptionMessage = $response->getStatusCode() . ' - ' . $response->getStatusDescription() . PHP_EOL
+            $exceptionMessage = $response->getStatusCode() . ' - ' . $response->getReasonPhrase() . PHP_EOL
                 . 'Server Response' . PHP_EOL
-                . $response->getBody() . '.' . PHP_EOL
-                . 'Api Request' . PHP_EOL
-                . '[' . $url;
+                . $response->getBody()->getContents() . '.' . PHP_EOL
+                . 'Api Request' . PHP_EOL;
+
+            if (! empty($url)) {
+                $exceptionMessage .= '[' . $url . ']';
+            }
+
             throw new RuntimeException($exceptionMessage);
         }
     }
 
     /**
-     * Headers base para as requisições.
-     * @return array Array associativo com os headers comuns das requisições.
+     * @param string $method
+     *
+     * @return array
      */
-    protected function getBaseHeaders(){
-        return [
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-            'Authorization' => 'Basic ' . $this->authenticator->getAuthorizationCode()
-        ];
+    protected function getBaseHeaders(string $method): array
+    {
+        return in_array($method, ['POST', 'PUT'])
+            ? ['Content-Type' => 'application/json', 'Accept' => 'application/json']
+            : ['Accept' => 'application/json'];
     }
 }
